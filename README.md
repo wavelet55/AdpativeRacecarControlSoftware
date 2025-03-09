@@ -24,4 +24,14 @@ Layout
 * **CarDisplay** is a python based display interface used in the racecar
 
 
+Contributing
+============
+Reporting bugs, suggesting features, helping with documentation, and adding to the code is very welcome. 
+
+License
+=======
+
+Copyright (C) 2025  DireenTech Inc. (www.direentech.com)
+The Adaptive Racecar Control Software is licensed under GNU General Public License, version 3, a copy of this license has been provided within the COPYING file in this directory, and can also be found at <http://www.gnu.org/licenses/>.
+ 
 
