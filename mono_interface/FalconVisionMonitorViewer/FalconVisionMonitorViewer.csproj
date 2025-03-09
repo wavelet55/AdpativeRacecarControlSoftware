@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5224199C-ED1C-4C73-A149-124FF51C34F6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FalconVisionMonitorViewer</RootNamespace>
+    <AssemblyName>FalconVisionMonitorViewer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AsyncIO, Version=0.0.0.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AsyncIO.0.1.26.0\lib\net40\AsyncIO.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="NetMQ_MonoDev">
+      <HintPath>..\packages\NetMQ\NetMQ_V4.0.0.1_NVidiaTXnFix.dll</HintPath>
+    </Reference>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\packages\NetMQ\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DceEPAS.cs" />
+    <Compile Include="FalconVisionMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FalconVisionMainForm.Designer.cs">
+      <DependentUpon>FalconVisionMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\BlobDetectorParameters.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\BlobDetectorParameters.Designer.cs">
+      <DependentUpon>BlobDetectorParameters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraCalChessBdInput.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraCalChessBdInput.Designer.cs">
+      <DependentUpon>CameraCalChessBdInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraCalControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraCalControl.Designer.cs">
+      <DependentUpon>CameraCalControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraMountCorrectionInput.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraMountCorrectionInput.Designer.cs">
+      <DependentUpon>CameraMountCorrectionInput.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraOrientationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraOrientationControl.Designer.cs">
+      <DependentUpon>CameraOrientationControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraParametersSetupWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\CameraParametersSetupWidget.Designer.cs">
+      <DependentUpon>CameraParametersSetupWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ColorSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ColorSelectionForm.Designer.cs">
+      <DependentUpon>ColorSelectionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\FeatureMatchProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\FeatureMatchProcessControl.Designer.cs">
+      <DependentUpon>FeatureMatchProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\DisplayImageInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\DisplayImageInfo.Designer.cs">
+      <DependentUpon>DisplayImageInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\GeoCoordinateSystemSetup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\GeoCoordinateSystemSetup.Designer.cs">
+      <DependentUpon>GeoCoordinateSystemSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\GPSFixWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\GPSFixWidget.Designer.cs">
+      <DependentUpon>GPSFixWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadOrientationCalWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadOrientationCalWidget.Designer.cs">
+      <DependentUpon>HeadOrientationCalWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadOrientationControlWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadOrientationControlWidget.Designer.cs">
+      <DependentUpon>HeadOrientationControlWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadOrientationSPWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadOrientationSPWidget.Designer.cs">
+      <DependentUpon>HeadOrientationSPWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadTrackingControlWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\HeadTrackingControlWidget.Designer.cs">
+      <DependentUpon>HeadTrackingControlWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ImageCaptureControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ImageCaptureControl.Designer.cs">
+      <DependentUpon>ImageCaptureControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ImageCaptureSetupAndStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ImageCaptureSetupAndStatus.Designer.cs">
+      <DependentUpon>ImageCaptureSetupAndStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ImageProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ImageProcessControl.Designer.cs">
+      <DependentUpon>ImageProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\IMUControlWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\IMUControlWidget.Designer.cs">
+      <DependentUpon>IMUControlWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\KarTechLinearActuatorSetupWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\KarTechLinearActuatorSetupWidget.Designer.cs">
+      <DependentUpon>KarTechLinearActuatorSetupWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\LinearActuatorPositionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\LinearActuatorPositionControl.designer.cs">
+      <DependentUpon>LinearActuatorPositionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ManagerStatsUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ManagerStatsUserControl.Designer.cs">
+      <DependentUpon>ManagerStatsUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ProcessTimerStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\ProcessTimerStatus.Designer.cs">
+      <DependentUpon>ProcessTimerStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\SteeringControlWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\SteeringControlWidget.Designer.cs">
+      <DependentUpon>SteeringControlWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\StreamRecordControlWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\StreamRecordControlWidget.Designer.cs">
+      <DependentUpon>StreamRecordControlWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\TargetLocation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\TargetLocation.Designer.cs">
+      <DependentUpon>TargetLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\UAVInertialStates.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\UAVInertialStates.Designer.cs">
+      <DependentUpon>UAVInertialStates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\VehicleAndImageLocation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\VehicleAndImageLocation.Designer.cs">
+      <DependentUpon>VehicleAndImageLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\VehicleControlParametersWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\VehicleControlParametersWidget.Designer.cs">
+      <DependentUpon>VehicleControlParametersWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\VidereSystemStateControlWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GuiFormsWidgets\VidereSystemStateControlWidget.Designer.cs">
+      <DependentUpon>VidereSystemStateControlWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KarTeckLinearActuator.cs" />
+    <Compile Include="PixelColorType.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VisionSystemInterface\VisionCmdProcess.cs" />
+    <EmbeddedResource Include="FalconVisionMainForm.resx">
+      <DependentUpon>FalconVisionMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\BlobDetectorParameters.resx">
+      <DependentUpon>BlobDetectorParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\CameraCalChessBdInput.resx">
+      <DependentUpon>CameraCalChessBdInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\CameraCalControl.resx">
+      <DependentUpon>CameraCalControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\CameraMountCorrectionInput.resx">
+      <DependentUpon>CameraMountCorrectionInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\CameraOrientationControl.resx">
+      <DependentUpon>CameraOrientationControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\CameraParametersSetupWidget.resx">
+      <DependentUpon>CameraParametersSetupWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\ColorSelectionForm.resx">
+      <DependentUpon>ColorSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\FeatureMatchProcessControl.resx">
+      <DependentUpon>FeatureMatchProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\DisplayImageInfo.resx">
+      <DependentUpon>DisplayImageInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\GeoCoordinateSystemSetup.resx">
+      <DependentUpon>GeoCoordinateSystemSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\GPSFixWidget.resx">
+      <DependentUpon>GPSFixWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\HeadOrientationCalWidget.resx">
+      <DependentUpon>HeadOrientationCalWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\HeadOrientationControlWidget.resx">
+      <DependentUpon>HeadOrientationControlWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\HeadOrientationSPWidget.resx">
+      <DependentUpon>HeadOrientationSPWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\HeadTrackingControlWidget.resx">
+      <DependentUpon>HeadTrackingControlWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\ImageCaptureControl.resx">
+      <DependentUpon>ImageCaptureControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\ImageCaptureSetupAndStatus.resx">
+      <DependentUpon>ImageCaptureSetupAndStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\ImageProcessControl.resx">
+      <DependentUpon>ImageProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\IMUControlWidget.resx">
+      <DependentUpon>IMUControlWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\KarTechLinearActuatorSetupWidget.resx">
+      <DependentUpon>KarTechLinearActuatorSetupWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\LinearActuatorPositionControl.resx">
+      <DependentUpon>LinearActuatorPositionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\ManagerStatsUserControl.resx">
+      <DependentUpon>ManagerStatsUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\ProcessTimerStatus.resx">
+      <DependentUpon>ProcessTimerStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\SteeringControlWidget.resx">
+      <DependentUpon>SteeringControlWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\StreamRecordControlWidget.resx">
+      <DependentUpon>StreamRecordControlWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\TargetLocation.resx">
+      <DependentUpon>TargetLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\UAVInertialStates.resx">
+      <DependentUpon>UAVInertialStates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\VehicleAndImageLocation.resx">
+      <DependentUpon>VehicleAndImageLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\VehicleControlParametersWidget.resx">
+      <DependentUpon>VehicleControlParametersWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GuiFormsWidgets\VidereSystemStateControlWidget.resx">
+      <DependentUpon>VidereSystemStateControlWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\GeoCoordinateSystem\GeoCoordinateSystem.csproj">
+      <Project>{c21c04c2-38e3-46ce-bd5e-ec7b6d0c0814}</Project>
+      <Name>GeoCoordinateSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VisionBridge\VisionBridge.csproj">
+      <Project>{a7352efb-fea5-4eea-94bc-525109b4f72e}</Project>
+      <Name>VisionBridge</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

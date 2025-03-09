@@ -1,0 +1,8 @@
+numpy
+numpy-quaternion
+zmq
+pygame
+protobuf	#Not Required for newer versions after Feb. 2022
+quaternion
+	# Copyright (c) 2018, Michael Boyle
+	# See LICENSE file for details: <https://github.com/moble/quaternion/blob/master/LICENSE>

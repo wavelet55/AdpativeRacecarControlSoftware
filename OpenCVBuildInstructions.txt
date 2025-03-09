@@ -1,0 +1,69 @@
+Builing OpenCV for the Jetson Xavier
+Dec. 16, 2019
+H. Direen
+
+
+Build OpenCV 3.4 on NVIDIA Jetson AGX Xavier Developer Kit
+Ref:  https://www.jetsonhacks.com/2018/11/08/build-opencv-3-4-on-nvidia-jetson-agx-xavier-developer-kit/
+
+In order to get access to cameras using OpenCV on the NVIDIA Jetson AGX Xavier, you need to build the library from source. 
+
+
+HomeCUDABuild OpenCV 3.4 on NVIDIA Jetson AGX Xavier Developer Kit
+Build OpenCV 3.4 on NVIDIA Jetson AGX Xavier Developer Kit
+
+November 8, 2018 kangalow CUDA, Gstreamer, OpenCV, Xavier 14
+
+In order to get access to cameras using OpenCV on the NVIDIA Jetson AGX Xavier, you need to build the library from source. Looky here:
+
+Background
+
+Using JetPack 4.1, you may install OpenCV as an option. However, that particular version of OpenCV does not support CUDA or camera input.
+
+What to do? Build it yourself of course!
+
+Fortunately we have some convenience scripts to help with that task in the JetsonHacks repository buildOpenCVXavier on Github.
+Installation
+
+You should note that OpenCV is a rich environment, and can be custom tailored to your needs. As such, some of the more common options are in the build command, but are not comprehensive. Modify the options to suit your needs.
+Library location
+
+With this script release, the script now installs OpenCV in /usr/local. Earlier versions of this script installed in /usr. You may have to set your include and libraries and/or PYTHONPATH to point to the new version. See the Examples folder. Alternatively, you may want to change the script to install into the /usr directory.
+
+All of this may lead to a conflict. You may consider removing OpenCV installed by JetPack before performing this script installation:
+
+    $ sudo apt-get purge libopencv*
+
+Options
+
+Make sure to read through the install script. In the script, here are some of the options that were included:
+
+    CUDA
+    Fast Math (cuBLAS)
+    OpenGL
+    GStreamer 1.0
+    Video 4 Linux (V4L)
+    Python 2.7 and Python 3.5 support
+    TBB (Threading Build Blocks)
+
+Build and Install
+
+To download the source, build and install OpenCV:
+
+    $ git clone https://github.com/jetsonhacks/buildOpenCVXavier.git
+    $ cd buildOpenCVXavier
+    $ git checkout v1.0
+    $ ./buildOpenCV.sh
+
+
+Notes
+
+    This is meant to be a template for building your own custom version of OpenCV, pick and choose your own modules and options
+    Most people do NOT have both the JetPack installed and the source built OpenCV on their system. Some people have noted success using both however, check the forums.
+    Different modules and setting may require different dependencies, make sure to look for error messages when building.
+    In the video, there are two cameras. One is a camera from a Jetson TX1 Development Kit plugged in to the AGX Xavier camera port (located on the underside of the carrier board). The second camera is a Logitech C920 webcam connected via USB.
+
+
+
+
+

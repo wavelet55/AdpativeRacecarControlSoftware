@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=NascarDisplay
+Exec=/bin/bash /home/nvidia/CarDisplay/CarDisplay.sh
+Terminal=true
+Type=Application

@@ -1,0 +1,6 @@
+SUBSYSTEM=="tty", KERNELS=="1-3:1.0", SYMLINK+="rs232-imu"
+#SUBSYSTEM=="tty", KERNELS=="1-1.1:1.0", SYMLINK+="rs232-rc"
+SUBSYSTEM=="tty", KERNELS=="1-1.2:1.0", SYMLINK+="rs232-gps"
+#SUBSYSTEM=="tty", KERNELS=="1-1.2:1.0", SYMLINK+="rs232-rc"
+SUBSYSTEMS=="input", ATTRS{name}=="Origin Instruments Corp. Breeze", SYMLINK+="sipnpuff"
+

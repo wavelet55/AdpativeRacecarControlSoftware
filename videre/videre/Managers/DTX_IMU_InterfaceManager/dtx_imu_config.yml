@@ -1,0 +1,33 @@
+topics:
+  - name: DTX_IMU_InterfaceMgrStatusMsg
+    msg: MgrDtxConnectionStatusMsg
+    wakeup: false
+
+  - name: DTX_IMU_SysCmdMsg
+    msg: DTX_IMU_SystemCommandMsg
+    wakeup: True
+
+  - name: DTX_IMU_SysStatusMsg
+    msg: DTX_IMU_SystemStatusMsg
+    wakeup: False
+
+  - name: RecordControlMsg
+    msg: VidereRecordControlMsg
+    wakeup: true
+
+  - name: DTX_IMU_InterfaceMgrRecordStatusMsg
+    msg: VidereRecordStatusMsg
+    wakeup: false
+
+  - name: IMU_SensorSetCommandMsg
+    msg: DTX_IMU_SensorSetCommandMsg
+    wakeup: false
+
+  - name: IMU_SensorSetValuesMsg
+    msg: DTX_IMU_SensorSetValuesMsg
+    wakeup: false
+
+
+queues:
+  
+   

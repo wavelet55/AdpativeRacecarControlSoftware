@@ -1,0 +1,43 @@
+Harry Direen
+DireenTech Inc.
+Nov. 28, 2017
+
+Found an issue with NetMQ version 4.0.0.1 which also shows up in version 3.3.3.4.
+NetMQ crashes when making a socket connection... ref.  
+
+	_cmdResponseSocket = new RequestSocket();
+
+	if (_cmdResponseSocket != null)
+	{
+		_cmdResponseSocket.Connect(connStr);  //**** Crash Here  *****
+		_cmdResponseSocket.ReceiveReady += new EventHandler<NetMQSocketEventArgs>(EventClientReceiveMsg);
+	} 
+ 
+The crash only occurs on the Nvidia TX1 and TX2 machines.  
+
+I downloaded the NetMQ Source code from GitHub:  https://github.com/zeromq/netmq
+The issue was found in the NetMQ/src/NetMQ/Core/Utils/Clock.cs object.   The constructor
+opens:  s_rdtscSupported = Opcode.Open();  and returns true ok.
+In the         
+	/// <summary>
+        /// Return the CPU's timestamp counter, or 0 if it's not available.
+        /// </summary>
+        public static long Rdtsc()
+        
+routine, the call to:  Opcode.Rdtsc() 
+	return s_rdtscSupported ? (long)Opcode.Rdtsc() : 0;
+
+Causes the crash.  To fix the issue I change the routine to:
+
+	public static long Rdtsc()
+	{
+	    return NowUs();   //a method in Clock which returns a timestamp in microseconds.
+	}
+
+This fixed the issue.
+
+Use the repaired dll:   NetMQ_V4.0.0.1_NVidiaTXnFix.dll.
+
+I submitted a bug with my fix to the NetMQ team via GitHub.
+
+

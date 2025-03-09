@@ -1,0 +1,4 @@
+
+#define videre_VERSION_MAJOR @videre_VERSION_MAJOR@
+#define videre_VERSION_MINOR @videre_VERSION_MINOR@
+#define videre_VERSION_MINOR @videre_VERSION_PATCH@

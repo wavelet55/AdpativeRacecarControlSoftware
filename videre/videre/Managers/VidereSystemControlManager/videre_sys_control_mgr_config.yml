@@ -1,0 +1,13 @@
+topics:
+
+  - name: BCIControlConfigMsg
+    msg: nexusBCIControlConfigMsg
+    wakeup: false
+
+  - name: BCIControlConfigFeedbackMsg
+    msg: nexusBCIControlConfigMsg
+    wakeup: false
+
+queues:
+  
+   

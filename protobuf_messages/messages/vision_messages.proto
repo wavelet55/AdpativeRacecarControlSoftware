@@ -1,0 +1,1529 @@
+syntax="proto2";
+package vision_messages;
+
+//Messages to work with the Vision System.
+//
+
+// ---------------------------------------------------------------------------
+//The Vision Message Wrapper
+//The message wrapper is used to wrap all Vision System Messages.
+//The wrapper provides a unique message name that the message is identified
+//by.  Names are case-sensitive and should perferably be in CamelCase format
+//such as: VehicleInertialStates.
+//An optional message qualifier can be used by a message to further
+//qualify a message for processing.
+//The MsgData [optional] is any serializable byte array... it could
+//contain a serialize protobuf message, a JSON message, and Image or most anything.
+//The MsgDataSize is the number of bytes of the MsgData.  If the MsgData is
+//empty, the MsgDataSize must be zero.
+//Note:  the Vision Command/Response messages do not use this wrapper,
+//See:  VisionCommandPBMsg and VisionResponsePBMsg
+message VisionMessageWrapperPBMsg
+{
+    // Any information the vision code needs from the main system should go
+    // here.
+    required string MsgName = 1;
+    optional string MsgQualifier = 2;
+    optional bytes  MsgData = 3;
+    optional uint32 MsgDataSize = 4;
+}
+
+
+// ---------------------------------------------------------------------------
+//The Vision Command is part of the Command / Response pair to the Vision
+//System.  The main command is contained in the "command" parameter.
+//Many commands are nothing more than the Provide Command String.
+//The CmdQualifier [optional] is a string that can be used to qualify or
+//provide extra parameter information
+//The CmdData [optional] is any serializable byte array... it could
+//contain a serialize protobuf message, a JSON message or most anything.
+message VisionCommandPBMsg
+{
+    // Any information the vision code needs from the main system should go
+    // here.
+    required string Command = 1;
+    optional string CmdQualifier = 2;
+    optional bytes  CmdData = 3;
+}
+
+// <summary>
+// Vision response PB message.
+// This message is returned from the Vision System in response to
+// a VisionCommandPBMsg.
+// The message returns a OK or Error flag, and optional Response Message
+// string, and an optional Response Data.  The Data can be any serializable
+// data including a serialized proto-buf message.
+// </summary>
+message VisionResponsePBMsg
+{
+    enum ResponseType_e
+    {
+        kOK = 0;
+        kError = 1;
+    }
+
+    optional ResponseType_e  CmdResponseType = 1;
+    optional string CmdResponseMessage = 2;
+    optional bytes  CmdResponseData = 3;
+}
+
+
+// This message will be published from HOPS (C#) as often as possible. The c++
+// vision engine will update it's internal state with this information.
+message VehicleInertialStatePBMsg
+{
+    optional bool CoordinatesLatLonOrXY = 1;
+    optional double LatitudeRadOrY = 2;
+    optional double LongitudeRadOrX = 3;
+    optional double AltitudeMSL = 4;
+    optional double HeightAGL = 5;
+    optional double VelEastMpS = 6;
+    optional double VelNorthMpS = 7;
+    optional double VelDownMpS = 8;
+    optional double RollRad = 9;
+    optional double PitchRad = 10;
+    optional double YawRad = 11;
+    optional double RollRateRadps = 12;
+    optional double PitchRateRadps = 13;
+    optional double YawRateRadps = 14;
+    optional double gpsTimeStampSec = 15;
+}
+
+//This contains all the target formation based on Image Procssessing results.
+message TargetInfoPBMsg
+{
+    optional  uint32 ImageNumber = 1;
+    optional  VehicleInertialStatePBMsg VehicleInertialStates = 2;
+
+}
+
+
+// ---------------------------------------------------------------------------
+// This is what will be broadcasted to the main system and anyone who wants to
+// listen. This message represents the observables deduced from the computer
+// vision processing.
+message BroadcastPBMsg
+{
+	 optional string message_string = 1;
+     optional bool is_exception = 2;
+     optional bytes report = 3;
+}
+
+// -=-=-=----=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// These messages are specific to the vision algorithms needing to report 
+// things
+message SimpleFilterVisionObjPBMsg
+{
+	optional string info = 1;
+	optional bytes image_jpeg = 2;
+}
+
+//The Message contains various information about a Managers
+//operation including a number of statistics on the operation
+//of the manager.  The message correstponds to:  ManagerStatusMessage
+message ManagerStatsPBMsg{
+
+    optional string ManagerName = 1;
+
+    //Running state:  Ref:  RunningState_e
+    //  0 = Startup
+    //  1 = Running
+    //  2 = Shutdown
+    optional sint32 RunningState = 2;
+
+    optional bool ErrorCondition = 3;
+
+    optional sint32 ErrorCode = 4;
+
+    //Total number of Execution cycles since the start of the
+    //manager... this value is not reset or cleared.
+    optional sint32 TotalNumberOfExecuteCycles = 5;
+
+    //Number Of Execute Cycles since the last time the Stats were
+    //cleared or reset.
+    optional sint32 NumberOfExecuteCycles = 6;
+
+    optional double TimeSinceLastStatsReset_Sec = 7;
+
+    //Min, Max and Average ExecuteUnitOfWorkTime
+    //since the last time the Stats were cleared
+    optional double MinExecuteUnitOfWorkTime_Sec = 8;
+    optional double MaxExecuteUnitOfWorkTime_Sec = 9;
+    optional double AveExecuteUnitOfWorkTime_Sec = 10;
+    optional double TotalExecuteUnitOfWorkTime_Sec = 11;
+
+    //Min, Max and Average Sleep time... Time the
+    //manager loop is in the sleep state.
+    //since the last time the Stats were cleared
+    optional double MinSleepTime_Sec = 12;
+    optional double MaxSleepTime_Sec = 13;
+    optional double AveSleepTime_Sec = 14;
+    optional double TotalSleepTime_Sec = 15;
+
+    //The number of times the WakeUpManagerEH is called
+    //since the last time the Stats were cleared
+    optional sint32 NumberOfWakeUpCallsWhileAsleep = 16;
+    optional sint32 NumberOfWakeUpCallsWhileAwake = 17;
+}
+
+//This message is used to control a specific or all managers.
+//The manager Name is used to determine which manager is being effected
+//by the messagage... a manager name of "All" means the message applies
+//to all managers.
+message ManagerControlPBMsg {
+    //A Specific manager name, or "All"
+    //Manager names are case-insensitive
+    optional string ManagerName = 1;
+
+    optional bool ShutdownManager = 2;
+
+     //A change in the ResetMgrStatsToggle will cause the manager
+     //to reset it Stats.
+     optional bool ResetMgrStatsToggle = 3;
+
+     //PublishMgrStatsTime_Sec controls how often the Manager
+     //Stats are published.  A value less than zero will disable
+     //publishing the manager stats.
+     optional double PublishMgrStatsTime_Sec = 4;
+}
+
+/// <summary>
+/// Camera Steering Message
+/// This message provides specific information about how the
+/// camera sensor is pointed.  This infomation coupled with the
+/// Vehicle States Message should resolve the specific location
+/// the camera is pointing at.
+/// </summary>
+message CameraSteeringPBMsg {
+    /// <summary>
+    /// SPOI:  Sensor Point of Interest
+    /// If CameraSteeringModeSPOI is true, the Camera Sensor is being
+    /// actively pointed to a specific target location.  The Lat/Lon or
+    /// X-Y position inforation is the location (typically on the ground) the
+    /// camera sensor is being actively pointed at.  In this case, the vehicle
+    /// attitude information (pitch/roll/yaw) and camera Azmuth/Elevation angles,
+    /// along with velocity information, should be ignored.  The Lat/Lon or X-Y position
+    /// information provides the location the camera is pointed at.
+    ///
+    /// If CameraSteeringModeSPOI is false, the camera sensor is pointed (azmuth/elevation)
+    /// relative to the vehicle position and attitude.
+    /// </summary>
+    optional bool CameraSteeringModeSPOI = 1;
+
+    /// <summary>
+    /// If CoordinatesLatLon is true, the position coordinates
+    /// are in Latitude and Longitude.
+    /// If CoordinatesLatLon is false, the position coordinates
+    /// are passed as X-Y position data.
+    /// </summary>
+    optional bool CoordinatesLatLonOrXY = 12;
+
+    /// <summary>
+    /// Camera Pointing Location Latitude in Radians
+    /// Or Y position in meters
+    /// </summary>
+    optional double SpoiLatitudeRadOrY = 3;
+
+    /// <summary>
+    /// Camera Pointing Location Longitude in Radians
+    /// or X position in meters
+    /// </summary>
+    optional double SpoiLongitudeRadOrX = 4;
+
+    /// <summary>
+    /// Camera angle in radians with respect to the vehicle.
+    /// Azimuth angle is left/right relative to a pilots view.
+    /// Zero radians is striaght ahead.
+    /// Positive angles are to the right, negative is to the left.
+    /// </summary>
+    optional double CameraAzimuthAngleRad = 5;
+
+    /// <summary>
+    /// Camera angle in radians with respect to the vehicle.
+    /// Elevation is up/down relative to a pilots view.
+    /// Zero radians is straigh ahead.
+    /// Positive angles are up, negative angles are down.
+    /// -pi/2 is straight down relative to the vehicle.
+    /// </summary>
+    optional double CameraElevationAngleRad = 6;
+
+    /// <summary>
+    /// Camera Zoom angle in percent [0 to 100]
+    /// 100% is maximum zoom, 0 percent is minimum
+    /// or no zoom.
+    /// </summary>
+    optional double CameraZoomPercent = 7;
+}
+
+/// <summary>
+/// Image Compression Control Message.
+/// Establishes Image compression parameters
+/// and controls whether or not image compression is used.
+/// </summary>
+message ImageCompressionControlPBMsg
+{
+
+    /// <summary>
+    /// Supported Image Compression Types.
+    /// </summary>
+    enum VisionImageCompressionType_e
+    {
+        jpeg = 0;
+        mpeg = 1;
+        gif = 2;
+    }
+
+    /// <summary>
+    /// Enable or Disable Image Compression
+    /// </summary>
+    optional bool EnableImageCompression = 1;
+
+    /// <summary>
+    /// Enable or Disable Transmission of Compressed images.
+    /// Note:  Image Compression could be enabled just to log
+    /// the compressed images... not to transmit the images.
+    /// </summary>
+    optional bool TransmitCompressedImages = 2;
+
+    /// <summary>
+    /// Set the Type of Image Compression.
+    /// </summary>
+    optional VisionImageCompressionType_e ImageComressionType = 3;
+
+    /// <summary>
+    /// Set the approximate image compression ratio.
+    /// </summary>
+    /// <value>The image compression ratio.</value>
+    optional double ImageCompressionRatio = 4;
+
+    /// <summary>
+    /// The Desired framerate through the image compression
+    /// process.  The actual framerate may be less if compression
+    /// time or other factors limit the framerate.
+    /// </summary>
+    /// <value>The image compression ratio.</value>
+    optional double FrameRate = 5;
+}
+
+/// <summary>
+/// Logging control message.
+/// Establishes Logging parameters and
+/// controls whether or not logging is enabled.
+/// It may be desired to disable image logging when
+/// the UAV/Vehicle is not activily persuing a target
+/// to reduce the size the log files.
+/// </summary>
+message ImageLoggingControlPBMsg
+{
+    /// <summary>
+    /// Vision logging type.
+    /// The specific types of logging Falcon Vision Handles.
+    /// </summary>
+    enum VisionLoggingType_e {
+        LogMetaDataOnly = 0;
+        LogRawImages = 1;
+        LogCompressedImages = 2;
+    }
+
+    /// <summary>
+    /// Enable or Disable Logging
+    /// </summary>
+    optional bool EnableLogging = 1;
+
+    /// <summary>
+    /// Set the Type of Logging... Raw Images, Compressed
+    /// images, or only metadata for images.
+    /// </summary>
+    optional VisionLoggingType_e LoggingType = 2;
+}
+
+
+/// <summary>
+/// Image Location Information
+/// Provides location on the ground for of the Image.
+/// </summary>
+message ImageLocationPBMsg
+{
+    /// <summary>
+    /// Image Number
+    /// Each Image is tagged with a number when it is captured
+    /// for reference purposes.
+    /// </summary>
+    optional uint32 ImageNumber = 1;
+
+    /// <summary>
+    /// Image Center Latitude Location in Radians
+    /// </summary>
+    optional double ImageCenterLatitudeRadians = 2;
+
+    /// <summary>
+    /// Image Center Longitude Location in Radians
+    /// </summary>
+    optional double ImageCenterLongitudeRadians = 3;
+
+    /// <summary>
+    /// A 4x2 Matrix of Image Corner Information
+    /// Accesss by:  corner number, column:  (2*corner + x-Lat=0 or Long-y=1)
+    /// Corner information can be given relative to the image center in x-y
+    /// coordinates where x is the east-west direction and y is in the north-south
+    /// direction in meters from the center of the image.
+    /// Or, the corners can be given in Lat/Long (radians)
+    /// The corners go counter clockwise from the North-East Corner.
+    /// </summary>
+    repeated  double TargetCornerLocations = 4;
+
+    /// <summary>
+    /// TargetCornersLatLonOrXY
+    /// If true... corner locations are Lat/Long in Radians.
+    /// If false... corner locations are X-Y in meters from the center of the
+    /// Image.
+    /// </summary>
+    optional bool TargetCornersLatLonOrXY = 5;
+}
+
+/// <summary>
+/// Target Location Information for Ground based targets
+/// Provides location on the ground for a target.
+/// </summary>
+message GroundTargetLocationPBMsg
+{
+
+    /// <summary>
+    /// Target Type Code
+    /// This is an agreeded upont code for the type of target
+    /// (Building, car, human...)  Since the codes will change based upon
+    /// mission and image processing... an enum is not used.
+    /// Image processing will return this code for the type of target it finds.
+    /// </summary>
+    optional uint32 TargetTypeCode = 1;
+
+    /// <summary>
+    /// Target ID
+    /// A unique ID number for the target... if known
+    /// otherwise set to zero.
+    /// </summary>
+    optional uint32 TargetID = 2;
+
+    /// <summary>
+    /// Target Latitude Location in Radians
+    /// </summary>
+    optional double TargetLatitudeRadians = 3;
+
+    /// <summary>
+    /// Target Longitude Location in Radians
+    /// </summary>
+    optional double TargetLongitudeRadians = 4;
+
+    /// <summary>
+    /// Target Altitude Location in meters above Mean Sea Level
+    /// or above earth standard elipsoid
+    /// </summary>
+    optional double TargetAltitudeMSL = 5;
+
+    /// <summary>
+    /// Target Altitude is set/valid if true,
+    /// otherwise the Altitude data was not set and
+    /// is not valid.
+    /// </summary>
+    optional bool TargetAltitudeValid = 6;
+
+    /// <summary>
+    /// The Azimuth Angle to the target relative to the UAV
+    /// location.
+    /// This value is for compatibility with how target information
+    /// is provided to the HOPS Sensor Fusion... it should be obsoleted
+    /// in time and the target lat/lon and covarience used.
+    /// </summary>
+    optional double TargetAzimuthRadians = 7;
+
+    /// <summary>
+    /// The Elevation Angle to the target relative to the UAV
+    /// location.
+    /// This value is for compatibility with how target information
+    /// is provided to the HOPS Sensor Fusion... it should be obsoleted
+    /// in time and the target lat/lon and covarience used.
+    /// </summary>
+    optional double TargetElevationRadians = 8;
+
+    /// <summary>
+    /// The orientation of the target with respect to true north
+    /// in radians with positive angles clockwise (East = pi/2).
+    /// This value is for compatibility with how target information
+    /// is provided to the HOPS Sensor Fusion... it should be obsoleted
+    /// in time and the target lat/lon and covarience used.
+    /// </summary>
+    optional double TargetOrientationRadians = 9;
+
+    /// <summary>
+    /// This flag will be true if target Azimuth, Elevation,
+    /// and Orientation angle values are set, otherwise the
+    /// flag will be false.
+    /// </summary>
+    optional bool TargetAzimuthElevationOrientationValid = 10;
+
+    //Target Covarience Values...
+
+    /// <summary>
+    /// A 2x2 Matrix of the Covarience values...
+    /// Accesss by:  row, column:  (2*row + column)
+    /// If the lenght of TargetCovarianceMatrix is less than 4,
+    /// then it should be assumed the covariance values were not
+    /// set and are invalid.
+    /// </summary>
+    repeated double TargetCovarianceMatrix = 11;
+
+
+    optional bool TargetCovarianceValid = 12;
+
+
+    optional int32 TargetPixelLocation_x = 13;
+
+
+    optional int32 TargetPixelLocation_y = 14;
+}
+
+
+/// <summary>
+/// Image Processing Target Information
+/// Provides location the targets found in a given
+/// image..
+/// </summary>
+message ImageProcTargetInfoResultsPBMsg
+{
+    /// <summary>
+    /// Image Location Information
+    /// this includes the Image Number.
+    /// </summary>
+    optional ImageLocationPBMsg ImageLocation = 1;
+
+    /// <summary>
+    /// Image Center Latitude Location in Radians
+    /// </summary>
+    optional VehicleInertialStatePBMsg VehicleInertialStates = 2;
+
+    /// <summary>
+    /// List of Target Locations.
+    /// If there are no targets in the image, the list will be empty.
+    /// </summary>
+    repeated GroundTargetLocationPBMsg TargetLocations = 3;
+}
+
+/// <summary>
+/// Target Parmeters Message
+/// Provides Parameters for the given Target used by Image Processing
+/// to identify the given target type.
+/// </summary>
+message TargetParametersPBMsg
+{
+    /// <summary>
+    /// Target Type Code
+    /// This is an agreeded upont code for the type of target
+    /// (Building, car, human...)  Since the codes will change based upon
+    /// mission and image processing... an enum is not used.
+    /// Image processing will return this code for the type of target it finds.
+    /// </summary>
+    optional uint32 TargetTypeCode = 1;
+
+    /// <summary>
+    /// Flag that indicates whether or not the Target Type is
+    /// tactical or not.
+    /// </summary>
+    optional bool IsTaticalTarget = 2;
+
+    /// <summary>
+    /// Estimated Target Size Or Width
+    /// How this number is interpreted is based on the Target Type.
+    /// </summary>
+    optional double TargetSizeOrWidth = 3;
+
+    /// <summary>
+    /// Estimated Target Size Or Width
+    /// How this number is interpreted is based on the Target Type.
+    /// </summary>
+    optional double TargetPerimeterOrLenght = 4;
+
+    /// <summary>
+    /// Estimated Target Infrared Heat Gradient
+    /// </summary>
+    optional double TargetIRHeatGradient = 5;
+
+    /// <summary>
+    /// Estimated Target Infrared Size
+    /// </summary>
+    optional double TargetIRSize = 6;
+
+    /// <summary>
+    /// Target EO RGB Color Code
+    /// </summary>
+    optional uint32 TargetRGBColorCode = 7;
+}
+
+/// <summary>
+/// Time sync message.
+/// Provides a time sync offset in order to synchronize the CPU clock
+/// with GPS time.
+/// </summary>
+message TimeSyncPBMsg
+{
+    /// <summary>
+    /// Time Sync Offset in Seconds
+    /// Add this offset time in seconds to synchronize the system/computer
+    /// clock with the GPS time.
+    /// </summary>
+    optional double TimeSyncOffsetSeconds = 1;
+}
+
+/// <summary>
+/// Set up the Geo-Coordinate System
+/// The Geo-Coordinate system is responsible for conversions
+/// between Lat/Lon and X-Y coordintes.
+/// Pass in the Center Lat/Lon of the area the mission is being
+/// flown/run in and the type of conversion to use.
+/// </summary>
+message GeoCoordinateSystemSetupPBMsg
+{
+    enum GeoCoordinateSystemConversionType_e
+    {
+        /// <summary>
+        /// For small areas < +/2 2/5 km
+        /// This is the fastest type of conversion as it only requires
+        /// a simple scaling between Lat/Lon and X-Y
+        /// </summary>
+        Linear = 0;
+
+        /// <summary>
+        /// Preferred for Larger Areas.
+        /// Based upon WGS84 Conversions relative to a Reference location.
+        /// X-Y zero (0,0) is at the provide Lat/Lon Reference location
+        /// Does not have issues with Map Boundarys or crossing the equator
+        /// </summary>
+        WGS84_Relative = 1;
+
+        /// <summary>
+        /// Provides X-Y Coordinates that are established by the
+        /// WGS-84 Mapping standards.
+        /// Warning!!! There are hugh step changes at map boundaries
+        /// and at the equator.  Do not used this conversion if there
+        /// are any chances of crossing from one WGS-84 map boundary to another.
+        /// For this reason... I highly recommend using the WGS84_Relative option.
+        /// </summary>
+        WGS84_Map = 2;
+    }
+
+    /// <summary>
+    /// GeoCoordinateSystemConversionType
+    /// </summary>
+    optional GeoCoordinateSystemConversionType_e GeoCoordinateSystemConversionType = 1;
+
+    /// <summary>
+    /// Center of operation Latitude in Degrees [-90, 90]
+    /// </summary>
+    optional double CenterLatitudeDegrees = 2;
+
+    /// <summary>
+    /// Center of operation Longitude in Degrees [-180, 180]
+    /// </summary>
+    optional double CenterLongitudeDegrees = 3;
+
+    /// <summary>
+    /// Ground Altitude in Meters above mean sea level.
+    /// </summary>
+    optional double GroundAltitudeMSL = 4;
+
+
+    /// <summary>
+    /// For Linear Conversion Type the DeltaLatitudeDegrees
+    /// is the expected positive range of Latitudes around the
+    /// CenterLatitude the vehicle is expected to operate in.
+    /// The full range will be CenterLatitude +/- DeltaLatitude.
+    /// </summary>
+    optional double DeltaLatitudeDegrees = 5;
+
+    /// <summary>
+    /// For Linear Conversion Type the DeltaLongitudeDegrees
+    /// is the expected positive range of Longitude around the
+    /// CenterLongitude the vehicle is expected to operate in.
+    /// The full range will be CenterLongitude +/- DeltaLongitude.
+    /// </summary>
+    optional double DeltaLongitudeDegrees = 6;
+}
+
+/// <summary>
+/// The outside world can request a coordinate converion from
+/// the vision system.  This message provides both the Lat/Lon
+/// or X-Y info, and the response will fill in the coorisponting
+/// values.
+/// </summary>
+message LatLonXYConversionPBMsg
+{
+
+    /// <summary>
+    /// If true convert from Lat/Lon to X-Y Coordinates
+    /// If false convert from X-Y to Lat/Lon
+    /// </summary>
+    optional bool LatLonToXYConversion = 1;
+
+    /// <summary>
+    /// Latitude in Degrees [-90, 90]
+    /// </summary>
+    optional double LatitudeDegrees = 2;
+
+    /// <summary>
+    /// Longitude in Degrees [-180, 180]
+    /// </summary>
+    optional double LongitudeDegrees = 3;
+
+    /// <summary>
+    /// X (East-West) Value Meters
+    /// </summary>
+    optional double X_PosMeters = 4;
+
+    /// <summary>
+    /// Y (North-South) Value Meters
+    /// </summary>
+    optional double Y_PosMeters = 5;
+}
+
+
+enum ImageCaptureSource_e
+{
+    ImageCaptureSource_NoChange = 0;        //Don't change the current source.
+    ImageCaptureSource_OpenCVWebCam = 1;    //OpenCV Driver for WebCam
+    ImageCaptureSource_IPMFiles = 2;        //ImagePlusMetadata Files (.ipm)
+    ImageCaptureSource_CImageFiles  = 3;    //Compressed Image Files (.jpg)
+    ImageCaptureSource_Sensoray2253  = 4;
+    ImageCaptureSource_NVidiaCSI= 5;
+    ImageCaptureSource_VideoFile= 6;
+}
+
+enum CPImageCaptureFormat_e
+{
+   Unknown = 0;
+   Grey8 = 1;
+   Grey16 = 2;
+   RGB24 = 3;
+   BGR24 = 4;
+   MJPEG = 5;
+   YUV422 = 6;
+}
+
+enum ImageCaptureError_e
+{
+    ImageCaptureError_None = 0;
+    ImageCaptureError_SourceConfig = 1;
+    ImageCaptureError_SourceCapture = 02;
+};
+
+/// <summary>
+/// Image Capture Control
+/// Controls Image Capture and provides configuration
+/// parameters for Image Capture.
+/// Note:  The configureation parameters are only read
+/// and updated/set by Videre when the Image Capture is
+/// disabled.
+/// </summary>
+message ImageCaptureControlPBMsg
+{
+
+    /// <summary>
+    /// The Image Capture On flag must be true
+    /// to capture images and do any of the processing
+    /// of images.  Setting this flag to false will disable
+    /// all other image processing.
+    /// Note:  The configureation parameters are only read
+    /// and updated/set by Videre when the Image Capture is
+    /// disabled.
+    /// </summary>
+    optional bool ImageCaptureEnabled = 1;
+
+    /// <summary>
+    /// If NumberOfImagesToCapture is greater than zero,
+    /// the Vision System will capture the set number of images,
+    /// process the images, and then disable ImageCapture.
+    /// If NumberOfImagesToCapture is zero or less... the Vision
+    /// System will continue capturing and processing images until
+    /// ImageCaptureEnabled is disabled by the user.
+    /// To Restart Image Capture after the NumberOfImagesToCapture
+    /// has been reached... Disable and then re-enable Image
+    /// capture with the ImageCaptureEnabled flag.
+    /// </summary>
+    optional uint32 NumberOfImagesToCapture = 2;
+
+    /// <summary>
+    /// Desired Frames per second.
+    /// In general the frame rate will be controlled by the time
+    /// to do the image processing.  If image processing is disabled
+    /// or very quick, this value can be used to slow down the image
+    /// capture and processing rate.  Set to a higher value to get the
+    /// max frame rate that is supported by the image processing time.
+    /// </summary>
+    optional double DesiredFramesPerSecond = 3;
+
+    /// <summary>
+    /// Desired Image Width and Height
+    /// Where Image Width and Height can be controlled, use
+    /// these parameters.  If set to zero, the Videre Config
+    /// info will be used.
+    /// </summary>
+    optional uint32  DesiredImageWidth = 4;
+    optional uint32  DesiredImageHeight = 5;
+
+    /// <summary>
+    /// Source of Images for Image Capture
+    /// </summary>
+    optional ImageCaptureSource_e ImageCaptureSource = 6;
+
+    /// <summary>
+    /// Image Capture Format:
+    ///    MJPEG, YUV... Depends on webcam capability
+    /// </summary>
+    optional CPImageCaptureFormat_e ImageCaptureFormat = 7;
+
+    /// <summary>
+    /// Primary Configuration String for the ImageCaptureSource.
+    /// This could be the Device number for the WebCam,
+    ///  or it could be the Directory of Image Files.
+    /// If this is empty the Videre Config info will be used.
+    /// </summary>
+    optional string ImageCaptureSourceConfigPri = 8;
+
+    /// <summary>
+    /// Secondary Configuration String for the ImageCaptureSource.
+    /// This could be the Device number for the WebCam,
+    ///  or it could be the Directory of Image Files.
+    /// If this is empty the Videre Config info will be used.
+    /// </summary>
+    optional string ImageCaptureSourceConfigSec = 9;
+
+    /// <summary>
+    /// When images are being captured from a finite
+    /// source such as a directory of image files,
+    /// if this flag is true, Image capture will restart
+    /// capture from the start of the source after reaching
+    /// the end.
+    /// </summary>
+    optional bool ImageSourceLoopAround = 10;
+
+    optional bool AutoFocusEnable = 11;
+
+}
+
+
+/// <summary>
+/// CameraParameters Setup Protobuf Message
+/// This message provides specific camera parameters
+/// and control items.
+/// Values of zero or negative numbers typically mean
+/// use default value or no value passed.
+
+/// </summary>
+message CameraParametersSetupPBMsg
+{
+    /// <summary>
+    /// ImageCaptureFormat
+    /// </summary>
+    optional CPImageCaptureFormat_e ImageCaptureFormat = 1;
+
+    /// <summary>
+    /// Mode
+    /// </summary>
+    optional uint32 Mode = 2;
+
+    /// <summary>
+    /// FrameWidth
+    /// </summary>
+    optional uint32 FrameWidth = 3;
+
+    /// <summary>
+    /// FrameWidth
+    /// </summary>
+    optional uint32 FrameHeight = 4;
+
+    /// <summary>
+    /// FrameRateFPS
+    /// </summary>
+    optional double FrameRateFPS = 5;
+
+    /// <summary>
+    /// Autofocus on --> true
+    /// </summary>
+    optional bool Autofocus = 6;
+
+    /// <summary>
+    /// Focus
+    /// </summary>
+    optional double FocusValue = 7;
+
+    /// <summary>
+    /// Brightness
+    /// </summary>
+    optional double Brightness = 8;
+
+    /// <summary>
+    /// Contrast
+    /// </summary>
+    optional double Contrast = 9;
+
+    /// <summary>
+    /// Saturation
+    /// </summary>
+    optional double Saturation = 10;
+
+    /// <summary>
+    /// Hue
+    /// </summary>
+    optional double Hue = 11;
+
+    /// <summary>
+    /// Gain
+    /// </summary>
+    optional double Gain = 12;
+
+    /// <summary>
+    /// Exposure
+    /// </summary>
+    optional double Exposure = 13;
+
+    /// <summary>
+    /// Exposure
+    /// </summary>
+    optional double WhiteBallanceBlue = 14;
+
+    /// <summary>
+    /// Exposure
+    /// </summary>
+    optional double WhiteBallanceRed = 15;
+
+     /// <summary>
+    /// ExternalTrigger on --> true
+    /// </summary>
+    optional bool ExternalTrigger = 16;
+
+}
+
+
+/// <summary>
+/// StreamRecordControlPBMsg
+/// </summary>
+message StreamControlPBMsg
+{
+
+    /// <summary>
+    /// Stream Images On/Off
+    /// </summary>
+    optional bool StreamImagesEnabled = 1;
+
+
+    /// <summary>
+    /// This is the max frame rate for streaming images...
+    /// The Vision System may be able to capture and process images
+    /// at 30 fps or some rate higher than bandwidth will allow to
+    /// stream images to the ground.  Setting this number to a lower number
+    /// say 5 fps will reduce the image rate sent to the ground.
+    /// If zero or less... stream images at max rate.
+    /// </summary>
+    optional double StreamImageFrameRate = 2;
+
+
+    /// <summary>
+    /// ImageCompressionQuality
+    /// Highest quality is 100, lowest is 1
+    /// High Quality means low compression, lower quality
+    /// means higher compression.
+    /// </summary>
+    optional uint32 ImageCompressionQuality = 3;
+
+    /// <summary>
+    /// StreamImageScaleDownFactor
+    /// The factor to scale the image down by before
+    /// compressing the image and sending it out.
+    /// A value of 2.0 will cut the image in half.
+    /// The value must be >= 1.0.  1.0 will not change the
+    /// image size.
+    /// </summary>
+    optional double StreamImageScaleDownFactor = 4;
+
+}
+
+
+
+/// <summary>
+/// Image Capture Status
+/// Status of the Image Capture Manager.
+/// </summary>
+message ImageCaptureStatusPBMsg
+{
+
+    /// <summary>
+    /// The Image Capture Enabled/Disabled Status:
+    /// If there is a error or NumberOfImagesToCapture has
+    /// been reached, or the images have been exhausted,
+    /// this will be false.
+    /// </summary>
+    optional bool ImageCaptureEnabled = 1;
+
+    /// <summary>
+    /// Set to true when the number of images capture
+    /// equals the NumberOfImagesToCapture (assuming
+    /// NumberOfImagesToCapture > 0);
+    /// </summary>
+    optional bool ImageCaptureComplete = 2;
+
+    /// <summary>
+    /// Set to true if the source of images is exhausted.
+    /// which can occur if images are being pulled from a
+    /// directory of images.
+    /// </summary>
+    optional bool EndOfImages = 3;
+
+    /// <summary>
+    /// Total Number of Images Captured Since Start of Videre
+    /// </summary>
+    optional uint32 TotalNumberOfImagesCaptured = 4;
+
+    /// <summary>
+    /// Total Number of Images Captured Since Image Capture
+    /// Enabled... Gets reset to zero when image capture is
+    /// disabled.
+    /// </summary>
+    optional uint32 CurrentNumberOfImagesCaptured = 5;
+
+
+    /// <summary>
+    /// Average Frames per second base on
+    /// CurrentNumberOfImagesCaptured / Time since Last Enabled.
+    /// </summary>
+    optional double AverageFramesPerSecond = 6;
+
+    /// <summary>
+    /// Source of Images for Image Capture
+    /// </summary>
+    optional ImageCaptureSource_e ImageCaptureSource = 7;
+
+    /// <summary>
+    /// The Error Number will be non-zero if there is an
+    /// error in the image capture process.  The error
+    /// number may be used to indicate what the error is.
+    /// </summary>
+    optional ImageCaptureError_e  ErrorCode = 8;
+
+}
+
+
+/// <summary>
+/// Vision Processing Control
+/// Sets many of the primary Vision/Image Processing Control
+/// Flags and Parameters.
+/// </summary>
+message VisionProcessingControlPBMsg
+{
+    /// <summary>
+    /// The Image Capture On flag must be true
+    /// to capture images and do any of the processing
+    /// of images.  Setting this flag to false will disable
+    /// all other image processing.
+    /// </summary>
+    optional bool ImageCaptureEnabled = 1;
+
+    /// <summary>
+    /// If NumberOfImagesToCapture is greater than zero,
+    /// the Vision System will capture the set number of images,
+    /// process the images, and then disable ImageCapture
+    /// If NumberOfImagesToCapture is zero or less... the Vision
+    /// System will continue capturing and processing images until
+    /// ImageCaptureEnabled is disabled by the user.
+    /// </summary>
+    optional sint32 NumberOfImagesToCapture = 2;
+
+    /// <summary>
+    /// Desired Frames per second.
+    /// In general the frame rate will be controlled by the time
+    /// to do the image processing.  If image processing is disabled
+    /// or very quick, this value can be used to slow down the image
+    /// capture and processing rate.  Set to a higher value to get the
+    /// max frame rate that is supported by the image processing time.
+    /// </summary>
+    optional double DesiredFramesPerSecond = 3;
+
+    /// <summary>
+    /// GPU Processing On
+    /// Turns on/off all GPU Image Processing.
+    /// Finer level control of the Image processing is given below.
+    /// </summary>
+    optional bool GPUProcessingEnabled = 4;
+
+    /// <summary>
+    /// Target Image Processing On/Off
+    /// </summary>
+    optional bool TargetImageProcessingEnabled = 5;
+
+
+    enum VisionProcessingModeEnum
+    {
+        VisionProcMode_None = 0;
+        VisionProcMode_Target = 1;
+        VisionProcMode_GPSDenied = 2;
+        VisionProcMode_CameraCalibration = 3;
+        VisionProcMode_FeatureMatchProc = 4;
+        VisionProcMode_HeadTrackingProc = 5;
+        VisionProcMode_HeadOrientationCalProc = 6;
+    }
+
+    /// <summary>
+    /// Vision Processing Mode
+    /// This is the High-Level Vision / Image Processing mode of operation.
+    /// </summary>
+    optional VisionProcessingModeEnum VisionProcessingMode = 6;
+
+
+
+    enum TargetProcessingModeEnum
+    {
+        TgtProcMode_None = 0;
+        TgtProcMode_Std = 1;
+        TgtProcMode_Blob = 2;
+        TgtProcMode_CheckerBoard = 3;
+    }
+
+    /// <summary>
+    /// Target Image Processing Mode
+    /// Various types of Target Processing could be supported,
+    /// this enum selects the active Target Processing Mode.
+    /// </summary>
+    optional TargetProcessingModeEnum TargetProcessingMode = 7;
+
+    /// <summary>
+    /// Target Image Processing On/Off
+    /// </summary>
+    optional bool GPSDeniedProcessingEnabled = 8;
+
+    enum GPSDeniedProcessingModeEnum
+    {
+        GpsDeniedMode_None = 0;
+        GpsDeniedMode_Std = 1;
+    }
+
+    /// <summary>
+    /// GPS Denied Processing Mode
+    /// Various types of Target Processing could be supported,
+    /// this enum selects the active Target Processing Mode.
+    /// </summary>
+    optional GPSDeniedProcessingModeEnum GPSDeniedProcessingMode = 9;
+
+    /// <summary>
+    /// Record Images On/Off
+    /// </summary>
+    optional bool RecordImagesEnabled = 10;
+
+    /// <summary>
+    /// Stream Images On/Off
+    /// </summary>
+    optional bool StreamImagesEnabled = 11;
+
+}
+
+// <summary>
+// Camera Calibration Control Message.
+// </summary>
+message CameraCalControlPBMsg
+{
+    enum CameraCalibrationType_e
+    {
+        CameraCal_2DPlaneCheckerBoard = 0;
+    }
+
+    enum CameraCalCmd_e
+    {
+        NullCmd = 0;            //Remain in current state
+        Reset = 1;              //Go To reset State
+        ClearImageSet = 2;      //Go to Reset after clearing directory of Images
+        StreamImages = 3;       //Stream Images and wait for Capture Image
+        CaptureImage = 4;       //Capture and verify image
+        SetImageOk = 5;         //Causes image to be stored... goto StreamImages
+        RejectImage = 6;        //Reject image and goto StreamImages
+        RunCalProcess = 7;       //Run Calibration against Image Set.
+    }
+
+    optional CameraCalibrationType_e  CameraCalibrationType = 1;
+    optional CameraCalCmd_e CameraCalCmd = 2;
+    optional string  CameraCalBaseFilename = 3;
+    optional int32 NumberOfRows = 4;
+    optional int32 NumberOfCols = 5;
+    optional double SquareSizeMilliMeters = 6;
+    optional double YawCorrectionDegrees = 7;
+    optional double PitchCorrectionDegrees = 8;
+    optional double RollCorrectionDegrees = 9;
+    optional double DelXCorrectionCentiMeters = 10;
+    optional double DelYCorrectionCentiMeters = 11;
+    optional double DelZCorrectionCentiMeters = 12;
+
+}
+
+// <summary>
+// Camera Calibration Control Message.
+// </summary>
+message CameraCalStatusPBMsg
+{
+
+    enum CameraCalState_e
+    {
+        Reset = 0;
+        WaitForStart = 1;
+        StreamImages = 2;
+        ImageValidate = 3;
+        ImageCapturedWait = 4;
+        CalProcess = 5;
+        CalComplete = 6;
+        CalError = 7;
+    }
+
+    optional CameraCalState_e  CameraCalState = 1;
+    optional int32 NumberOfImagesCaptured = 2;
+    optional string  CameraCalStatusMsg = 3;
+    optional bool ImageOk = 4;
+}
+
+message FeatureMatchProcCtrlPBMsg
+{
+    optional int32 FeatureMatchingProcCmd = 1;
+
+    optional int32 FeatureExtractionTypeRoutine = 2;
+
+    optional int32 FeatureMatchTypeRoutine = 3;
+
+    optional int32 FMImagePostProcessMethod = 4;
+
+    //Use NVidia GPU/Cuda processing or standard processing.
+    //Helps with measuring perfomance differences between the two.
+    optional bool UseGPUProcessing = 5;
+
+    //Generic Parameters for the processing routines
+    optional int32 ParamI_1 = 10;
+    optional int32 ParamI_2 = 11;
+    optional int32 ParamI_3 = 12;
+    optional int32 ParamI_4 = 13;
+    optional int32 ParamI_5 = 14;
+    optional int32 ParamI_6 = 15;
+    optional int32 ParamI_7 = 16;
+    optional int32 ParamI_8 = 17;
+    optional int32 ParamI_9 = 18;
+
+    optional double ParamF_10 = 20;
+    optional double ParamF_11 = 21;
+    optional double ParamF_12 = 22;
+    optional double ParamF_13 = 23;
+    optional double ParamF_14 = 24;
+    optional double ParamF_15 = 25;
+    optional double ParamF_16 = 26;
+    optional double ParamF_17 = 27;
+    optional double ParamF_18 = 28;
+    optional double ParamF_19 = 29;
+
+}
+
+message FeatureMatchProcStatusPBMsg
+{
+    optional int32 FeatureMatchingState = 1;
+
+    optional int32 FeatureExtractionTypeRoutine = 2;
+
+    optional int32 FeatureMatchTypeRoutine = 3;
+
+    optional string StatusMessage = 4;
+
+    optional int32 NumberOfImagesCaptured = 5;
+
+    optional double ProcessTimer_1 = 6;
+
+    optional double ProcessTimer_2 = 7;
+
+
+    //Generic Parameters for the processing routines
+    optional int32 StatusValI_1 = 10;
+    optional int32 StatusValI_2 = 11;
+    optional int32 StatusValI_3 = 12;
+    optional int32 StatusValI_4 = 13;
+    optional int32 StatusValI_5 = 14;
+    optional int32 StatusValI_6 = 15;
+    optional int32 StatusValI_7 = 16;
+    optional int32 StatusValI_8 = 17;
+    optional int32 StatusValI_9 = 18;
+
+    optional double StatusValF_10 = 20;
+    optional double StatusValF_11 = 21;
+    optional double StatusValF_12 = 22;
+    optional double StatusValF_13 = 23;
+    optional double StatusValF_14 = 24;
+    optional double StatusValF_15 = 25;
+    optional double StatusValF_16 = 26;
+    optional double StatusValF_17 = 27;
+    optional double StatusValF_18 = 28;
+    optional double StatusValF_19 = 29;
+
+}
+
+message ListOfManagerNamesPBMsg
+{
+    optional int32 NumberOfManagers = 1;
+    repeated string ListOfManagerNames = 2;
+}
+
+message SteeringTorqueCtrlPBMsg
+{
+    optional double SteeringTorquePercent = 1;
+    optional uint32 SteeringTorqueMap = 2;
+    optional bool SteeringControlEnabled = 3;
+    optional bool ManualExtControl = 4;
+}
+
+message DceEPASteeringStatusPBMsg
+{
+    optional double MotorCurrentAmps = 1;
+    optional double PWMDutyCyclePercent = 2;
+    optional double MotorTorquePercent = 3;
+    optional double SupplyVoltage = 4;
+    optional double TempDegC = 5;
+    optional double SteeringAngleDeg = 6;     //0 degrees is neutral position
+    optional int32  SteeringTorqueMapSetting = 7;
+    optional int32  SwitchPosition = 8;     //0 - 15
+    optional int32  TorqueA = 9;
+    optional int32  TorqueB = 10;
+
+    optional int32  ErrorCode = 11;
+    optional int32  StatusFlags = 12;
+    optional int32  LimitFlags = 13;
+    optional bool   ManualExtControl = 14;
+}
+
+message LinearActuatorPositionCtrlPBMsg
+{
+    optional double PositionPercent = 1;
+    optional bool   ClutchEnable = 2;
+    optional bool   MotorEnable = 3;
+    optional bool   ManualExtControl = 4;
+    optional double MotorCurrentAmps = 5;
+    optional double TempDegC = 6;
+    optional int32  ErrorFlags = 7;
+    optional bool   ActuatorSetupMode = 8;
+}
+
+message KarTechLinearActuatorParamsPBMsg
+{
+    optional double  MinPositionInches = 1;
+    optional double  MaxPositionInches = 2;
+    optional double  MotorMaxCurrentLimitAmps = 3;
+    optional double  FeedbackCtrl_ErrDeadbandInces = 4;
+    optional uint32  FeedbackCtrl_KP = 5;
+    optional uint32  FeedbackCtrl_KI = 6;
+    optional uint32  FeedbackCtrl_KD = 7;
+    optional uint32  FeedbackCtrl_CLFreq = 8;
+    optional uint32  Motor_MinPWM = 9;
+    optional uint32  Motor_MaxPWM = 10;
+    optional uint32  Motor_pwmFreq = 11;
+    optional uint32  PositionReachedErrorTimeMSec = 12;
+}
+
+message KarTechLinearActuatorSetupPBMsg
+{
+    optional bool   ResetOutputs = 1;
+    optional bool   ResetHardwareCfgs = 2;
+    optional bool   ResetUserCfgs = 3;
+    optional bool   ResetAll = 4;
+    optional bool   AutoZeroCal = 5;
+    optional bool   SetCanCommandResponsIDs = 6;
+}
+
+
+message HeadOrientationPBMsg
+{
+    optional double  HeadRollDegrees = 1;
+    optional double  HeadPitchDegrees = 2;
+    optional double  HeadYawDegrees = 3;
+    optional double  CovarianceNorm = 4;
+}
+
+message SipAndPuffPBMsg
+{
+    optional double  SipAndPuffPecent = 1;
+    optional double  SipAndPuffIntegralPercent = 2;
+}
+
+message IMUCommandResponsePBMsg
+{
+    optional bool  IMURemoteCtrlEnable = 1;
+    optional string  CmdRspMsg = 2;
+}
+
+message PlaybackControlPBMsg
+{
+    //The data log directory which contains the log files to be
+    //played back.  If null or empy the default directory will be used.
+    optional string DataLogDirectory = 1;
+
+    //Set this value to true to enable playback.
+    //This variable does not start or stop the playback... it
+    //informs the various managers the system is in playback mode
+    //which typically stops the processing from sensor inputs.
+    optional bool EnablePlayback = 2;
+
+    //If true, the playback will occur in a continuous loop...
+    //once the logs have been read, they process will
+    //automatically start over.
+    optional bool LoopBackToStartOfDataRecords = 3;
+
+    //Start the playback process when true, stop when false;
+    optional bool StartPlayback = 4;
+
+    //When true, the managers will sync playback to real-time
+    //as the log records are read.
+    optional bool TimeSyncPlayback = 5;
+
+    //When true, the playback will be restarted from the begining
+    //of the log files.
+    optional bool ResetPlayback = 6;
+
+    //Play the data records forward in time for the given number
+    //of seconds and then automatically stop the playback.
+    //If PlayTimeSeconds <= 0, then the play will continue indefinitely.
+    optional double PlayForTimeSeconds = 7;
+
+}
+
+message HeadTrackingControlPBMsg
+{
+    optional int32 Canny_low = 1;
+    optional int32 Canny_high = 2;
+    optional int32 GlyphAreaPixels_min = 3;
+    optional int32 GlyphAreaPixels_max = 4;
+
+    optional int32 NumberOfIterations = 5;
+    optional double ReprojectionErrorDistance = 6;
+    optional double ConfidencePercent = 7;
+
+    optional uint32 HeadTrackingImageDisplayType = 8;
+
+    optional uint32 GlyphModelIndex = 9;
+}
+
+message TrackHeadOrientationPBMsg
+{
+    optional double HeadOrientationQuaternion_W = 1;
+    optional double HeadOrientationQuaternion_X = 2;
+    optional double HeadOrientationQuaternion_Y = 3;
+    optional double HeadOrientationQuaternion_Z = 4;
+
+    optional double HeadTranslationVec_X = 5;
+    optional double HeadTranslationVec_Y = 6;
+    optional double HeadTranslationVec_Z = 7;
+
+    optional bool IsDataValid = 8;
+
+    optional uint32 ImageNumber = 9;
+    optional double ImageCaptureTimeStampSec = 10;
+    optional double VidereTimeStampSec = 11;
+
+    optional double CovarianceNorm = 12;
+}
+
+message IMUAccelGyroDataPBMsg
+{
+    //IMU Location:  0 --> Fixed,  1 --> Head
+    optional int32  IMULocation = 1;
+    optional double IMUTimeStampSec = 2;
+    optional double VidereTimeStampSec = 3;
+
+    optional double AccelMPS2_X = 4;
+    optional double AccelMPS2_Y = 5;
+    optional double AccelMPS2_Z = 6;
+
+    optional double GyroRadPerSec_X = 7;
+    optional double GyroRadPerSec_Y = 8;
+    optional double GyroRadPerSec_Z = 9;
+}
+
+message GPSFixPBMsg
+{
+    optional int32  TrackingSatellites = 1;
+    optional double LatitudeDeg = 2;	// degrees N
+    optional double LongitudeDeg = 3;	// degrees E
+    optional double AltitudeMSL = 4;	// meters above mean sea level
+
+    optional double Position_X = 5;     //Meters
+    optional double Position_Y = 6;
+    optional double Position_Z = 7;
+
+    optional double Velocity_X = 8;     //Meters / Second
+    optional double Velocity_Y = 9;
+    optional double Velocity_Z = 10;    //Meters above reference point
+
+    optional double GPSTimeStampSec = 11;  //Videre
+    optional double VidereTimeStampSec = 12;  //Videre
+
+}
+
+message VidereSystemControlPBMsg
+{
+    //These values follow the Videre System State/Status Enumerations
+    optional uint32 SystemState = 1;
+    optional bool StartProcess = 2;
+    optional bool PauseProces = 3;
+    optional bool StopProcess = 4;
+    optional uint32 SystemStatus = 5;
+    optional uint32 StatusCounter = 6;
+    optional bool DriverEnableSwitch = 7;
+    optional bool HeadControlEnable = 8;
+    optional bool ThrottleControlEnable = 9;
+    optional bool BrakeControlEnable = 10;
+    optional bool NexusBCIControlEnabled = 11;
+    optional bool NexusBCIThrottleEnable = 12;
+}
+
+
+message HeadOrientationControlPBMsg
+{
+    //These values follow the Videre System State/Status Enumerations
+    optional uint32 HeadOrientationOutputSelect = 1;
+    optional bool DisableHeadOrientationKalmanFilter = 2;
+    optional bool DisableVehicleInputToHeadOrientation = 3;
+    optional bool DisableVehicleGravityFeedback = 4;
+    optional double VehicleGravityFeedbackGain = 5;
+    optional double HeadOrientation_QVar = 6;
+    optional double HeadOrientation_RVar = 7;
+}
+
+message VehicleControlParametersPBMsg
+{
+    optional double SipnPuffBlowGain = 1;
+    optional double SipnPuffSuckGain = 2;
+    optional double SipnPuffDeadBandPercent = 3;
+
+    optional bool ReverseSipnPuffThrottleBrake = 4;
+    optional double ThrottleSipnPuffGain = 5;
+    optional double BrakeSipnPuffGain = 6;
+
+    optional bool ThrottleBrakeHeadTiltEnable = 7;
+    optional double ThrottleBrakeHeadTiltForwardDeadbandDegrees = 8;
+    optional double ThrottleBrakeHeadTiltBackDeadbandDegrees = 9;
+    optional double ThrottleHeadTiltGain = 10;
+    optional double BrakeHeadTiltGain = 11;
+
+    //Steering Angle or Torque Control
+    optional bool UseSteeringAngleControl = 12;
+    optional double SteeringDeadband = 13;
+    optional double SteeringControlGain = 14;
+
+    optional double MaxLRHeadRotationDegrees = 15;
+    optional int32 HeadLeftRighLPFOrder = 16;
+    optional double HeadLeftRighLPFCutoffFreqHz = 17;
+
+    optional double SteeringAngleFeedback_Kp = 18;
+    optional double SteeringAngleFeedback_Kd = 19;
+    optional double SteeringAngleFeedback_Ki = 20;
+
+    optional double SteeringBiasAngleDegrees = 21;
+    optional double RCSteeringGain = 22;
+
+    optional double BCIGain = 23;
+
+}
+

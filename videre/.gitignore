@@ -1,0 +1,9 @@
+build/
+Build/
+cmake-build-debug/
+cmake-build-release/
+cmake-build-*/
+*.user
+*swp
+.idea/
+*.iml

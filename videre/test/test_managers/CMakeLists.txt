@@ -1,0 +1,6 @@
+project(test_managers)
+add_subdirectory(test_system_info_manager)
+add_subdirectory(test_comms_manager)
+add_subdirectory(test_image_manager)
+add_subdirectory(test_image_reader_writer)
+

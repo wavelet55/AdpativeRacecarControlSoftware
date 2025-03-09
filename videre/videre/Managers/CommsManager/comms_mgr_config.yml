@@ -1,0 +1,29 @@
+topics:
+
+  - name: SipnPuffBCIValueMsg
+    msg: sipnPuffBCIMsg
+    wakeup: false
+
+  - name: SipnPuffConfigMsg
+    msg: sipnPuffConfigMsg
+    wakeup: false
+
+  - name: SipnPuffConfigFeedbackMsg
+    msg: sipnPuffConfigMsg
+    wakeup: false
+
+  - name: BCIThrottleControlMsg
+    msg: nexusBCIThrottleControlMsg
+    wakeup: false
+
+  - name: BCIControlConfigMsg
+    msg: nexusBCIControlConfigMsg
+    wakeup: false
+
+  - name: BCIControlConfigFeedbackMsg
+    msg: nexusBCIControlConfigMsg
+    wakeup: false
+
+queues:
+  
+   

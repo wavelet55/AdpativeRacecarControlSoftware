@@ -1,0 +1,263 @@
+/*
+ * 2253 ioctl header
+ * Copyright (c) 2013, Sensoray Co., Inc.
+ */
+
+#ifndef S2253_IOCTL_H
+#define S2253_IOCTL_H
+
+#include <linux/videodev2.h>
+
+/* define some extra fourcc format codes */
+#ifdef V4L2_PIX_FMT_MPEG4
+#define V4L2_PIX_FMT_MP4V V4L2_PIX_FMT_MPEG4
+#else
+#define V4L2_PIX_FMT_MP4V  v4l2_fourcc('M', 'P', '4', 'V') /* MPEG4 ES video */
+#endif
+#ifndef V4L2_PIX_FMT_H264
+#define V4L2_PIX_FMT_H264  v4l2_fourcc('H', '2', '6', '4') /* ITU H.264 ES video */
+#endif
+#define V4L2_PIX_FMT_MP42  v4l2_fourcc('M', 'P', '4', '2') /* MP4 v2 mux */
+#ifdef V4L2_PIX_FMT_MPEG2
+#define V4L2_PIX_FMT_MP2V V4L2_PIX_FMT_MPEG2
+#else
+#define V4L2_PIX_FMT_MP2V  v4l2_fourcc('M', 'P', '2', 'V') /* MPEG2 ES video */
+#endif
+
+/* Temporary defines until accepted in v4l-dvb */
+#ifndef V4L2_MPEG_STREAM_TYPE_MPEG_ELEM
+#define	V4L2_MPEG_STREAM_TYPE_MPEG_ELEM   6 /* MPEG elementary stream */
+#endif
+#ifndef V4L2_MPEG_STREAM_TYPE_MP4
+#define V4L2_MPEG_STREAM_TYPE_MP4	7 /* MP4 fragmented stream */
+#endif
+#ifndef V4L2_MPEG_VIDEO_ENCODING_MPEG_4
+#define	V4L2_MPEG_VIDEO_ENCODING_MPEG_4   3
+#endif
+#ifndef V4L2_MPEG_AUDIO_ENCODING_PCM
+#define V4L2_MPEG_AUDIO_ENCODING_PCM	5
+#endif
+#ifndef V4L2_MPEG_AUDIO_ENCODING_NONE
+#define V4L2_MPEG_AUDIO_ENCODING_NONE	6
+#endif
+
+/* backward compatibility helpers */
+#ifndef V4L2_CID_MPEG_AUDIO_AAC_BITRATE
+#define V4L2_CID_MPEG_AUDIO_AAC_BITRATE         (V4L2_CID_MPEG_BASE+110)
+#define V4L2_MPEG_AUDIO_ENCODING_AAC	3
+#endif
+
+#ifndef V4L2_CID_MPEG_VIDEO_H264_I_PERIOD
+/* FIXME: the base offset will probably change in the future */
+#define V4L2_CID_MPEG_VIDEO_H264_I_PERIOD	(V4L2_CID_MPEG_BASE+251)
+#endif
+
+#ifndef V4L2_MPEG_VIDEO_ENCODING_MPEG_4_AVC
+#define	V4L2_MPEG_VIDEO_ENCODING_MPEG_4_AVC 2
+#endif
+
+#define V4L2_MPEG_VIDEO_BITRATE_MODE_FIXEDQP 2
+#define V4L2_MPEG_VIDEO_BITRATE_MODE_CVBR 3
+#define V4L2_MPEG_VIDEO_BITRATE_MODE_FIXEDFRAMESIZE 4
+#define V4L2_MPEG_VIDEO_BITRATE_MODE_CBR1 5
+#define V4L2_MPEG_VIDEO_BITRATE_MODE_VBR1 6
+
+#ifndef V4L2_CTRL_CLASS_USER
+#define V4L2_CTRL_CLASS_USER 0x00980000
+#endif
+
+#define S2253_VIDIOC_OSD (BASE_VIDIOC_PRIVATE + 0)
+#define S2253_VIDIOC_CLOCK (BASE_VIDIOC_PRIVATE + 1)
+#define S2253_VIDIOC_DEBUG (BASE_VIDIOC_PRIVATE + 2)
+#define S2253_VIDIOC_LOG   (BASE_VIDIOC_PRIVATE + 3)
+#define S2253_VIDIOC_KLOG  (BASE_VIDIOC_PRIVATE + 4)
+#define S2253_VIDIOC_ECHO_TS      (BASE_VIDIOC_PRIVATE + 5)
+#define S2253_VIDIOC_OVERLAY (BASE_VIDIOC_PRIVATE + 6)
+#define S2253_VIDIOC_GET_STREAM_AUDIO (BASE_VIDIOC_PRIVATE + 7)
+#define S2253_VIDIOC_PUT_STREAM_AUDIO (BASE_VIDIOC_PRIVATE + 8)
+#define S2253_VIDIOC_SET_STREAM_AUDIO (BASE_VIDIOC_PRIVATE + 9)
+#define S2253_VIDIOC_SET_USER_DATA (BASE_VIDIOC_PRIVATE + 10)
+#define S2253_VIDIOC_GET_FRAME_COUNTER (BASE_VIDIOC_PRIVATE + 11)
+#define S2253_VIDIOC_SET_FRAME_COUNTER (BASE_VIDIOC_PRIVATE + 12)
+#define S2253_VIDIOC_SET_EXT_CLKDIV (BASE_VIDIOC_PRIVATE + 13)
+#define S2253_VIDIOC_EEPROM  (BASE_VIDIOC_PRIVATE + 14)
+#define S2253_VIDIOC_READ_FILE  (BASE_VIDIOC_PRIVATE + 15)
+#define S2253_VIDIOC_USB_RESET  (BASE_VIDIOC_PRIVATE + 16)
+#define S2253_VIDIOC_DEV_RESET  (BASE_VIDIOC_PRIVATE + 17)
+#define S2253_VIDIOC_VIDREG_WRITE  (BASE_VIDIOC_PRIVATE + 18)
+
+#define S2253P_VIDIOC_S_ENCODER_RESET (BASE_VIDIOC_PRIVATE + 100)
+#define S2253P_VIDIOC_S_ENCODER_READ (BASE_VIDIOC_PRIVATE + 101)
+#define S2253P_VIDIOC_G_ENCODER_READ (BASE_VIDIOC_PRIVATE + 102)
+#define S2253P_VIDIOC_S_GPS_DATA (BASE_VIDIOC_PRIVATE + 103)
+#define S2253P_VIDIOC_G_GPS_DATA (BASE_VIDIOC_PRIVATE + 104)
+#define S2253P_VIDIOC_S_GPS_READSTATUS (BASE_VIDIOC_PRIVATE + 105)
+#define S2253P_VIDIOC_G_GPS_READSTATUS (BASE_VIDIOC_PRIVATE + 106)
+#define S2253P_VIDIOC_S_GPIO_CONFIG (BASE_VIDIOC_PRIVATE + 107)
+#define S2253P_VIDIOC_S_GPIO_WRITE (BASE_VIDIOC_PRIVATE + 108)
+#define S2253P_VIDIOC_S_GPIO_READ (BASE_VIDIOC_PRIVATE + 109)
+#define S2253P_VIDIOC_G_GPIO_READ (BASE_VIDIOC_PRIVATE + 110)
+#define S2253P_VIDIOC_S_ECHO (BASE_VIDIOC_PRIVATE + 111)
+#define S2253P_VIDIOC_S_GPS_ENABLE (BASE_VIDIOC_PRIVATE + 112)
+#define S2253P_VIDIOC_G_GPS_ENABLE (BASE_VIDIOC_PRIVATE + 113)
+#define S2253P_VIDIOC_S_VERSION_READ (BASE_VIDIOC_PRIVATE + 114)
+#define S2253P_VIDIOC_G_VERSION_READ (BASE_VIDIOC_PRIVATE + 115)
+#define S2253P_VIDIOC_S_COMSTAT_READ (BASE_VIDIOC_PRIVATE + 116)
+#define S2253P_VIDIOC_G_COMSTAT_READ (BASE_VIDIOC_PRIVATE + 117)
+#define S2253P_VIDIOC_S_XIO_ENABLE (BASE_VIDIOC_PRIVATE + 118)
+#define S2253P_VIDIOC_S_XIO_READ (BASE_VIDIOC_PRIVATE + 119)
+#define S2253P_VIDIOC_G_XIO_READ (BASE_VIDIOC_PRIVATE + 120)
+#define S2253P_VIDIOC_S_XIO_PAUSE (BASE_VIDIOC_PRIVATE + 121)
+#define S2253P_VIDIOC_G_GPS_LATITUDE (BASE_VIDIOC_PRIVATE + 122)
+#define S2253P_VIDIOC_G_GPS_LONGITUDE (BASE_VIDIOC_PRIVATE + 123)
+#define S2253P_VIDIOC_G_GPS_SPEED (BASE_VIDIOC_PRIVATE + 124)
+#define S2253P_VIDIOC_G_GPS_COURSE (BASE_VIDIOC_PRIVATE + 125)
+#define S2253P_VIDIOC_G_GPS_UTC_TIME (BASE_VIDIOC_PRIVATE + 126)
+#define S2253P_VIDIOC_G_GPS_UTC_DATE (BASE_VIDIOC_PRIVATE + 127)
+#define S2253P_VIDIOC_G_GPS_SATELLITES (BASE_VIDIOC_PRIVATE + 128)
+#define S2253P_VIDIOC_G_GPS_LOCK (BASE_VIDIOC_PRIVATE + 129)
+#define S2253P_VIDIOC_G_GPS_GGA (BASE_VIDIOC_PRIVATE + 130)
+#define S2253P_VIDIOC_G_GPS_GSA (BASE_VIDIOC_PRIVATE + 131)
+#define S2253P_VIDIOC_G_GPS_GSV (BASE_VIDIOC_PRIVATE + 132)
+#define S2253P_VIDIOC_G_GPS_RMC (BASE_VIDIOC_PRIVATE + 133)
+#define S2253P_VIDIOC_S_ENC_ASYNCEN (BASE_VIDIOC_PRIVATE + 134)
+#define S2253P_VIDIOC_S_ENCODER_LOAD (BASE_VIDIOC_PRIVATE + 135)
+#define S2253P_VIDIOC_G_ONLINE (BASE_VIDIOC_PRIVATE + 136)
+#define S2253P_VIDIOC_S_SUSPEND (BASE_VIDIOC_PRIVATE + 137)
+#define S2253P_VIDIOC_G_GPS_ALTITUDE (BASE_VIDIOC_PRIVATE + 138)
+#define S2253P_VIDIOC_S_ENCODER_SCALE_FACTOR (BASE_VIDIOC_PRIVATE + 139)
+#define S2253P_VIDIOC_G_ENCODER_READ_SCALED (BASE_VIDIOC_PRIVATE + 140)
+
+
+struct s2253p_encoder {
+	__u8 chan_mask; // set for S_ENCODER_RESET, S_ENCODER_READ, S_ENCODER_LOAD
+	__u8 enable_mask; // set for S_ENC_ASYNCEN
+	union {
+		__u32 counts[2]; // set by G_ENCODER_READ, for S_ENCODER_LOAD
+		float scale_factor[2]; // set for S_ENCODER_SCALE_FACTOR
+		float scaled[2]; // set by G_ENCODER_READ_SCALED
+	};
+};
+struct s2253p_gpio {
+	union {
+		__u8 port_mask; // set for S_GPIO_CONFIG, S_GPIO_WRITE, S_GPIO_READ
+		__u8 not_ready_mask; // set by G_GPIO_READ
+	};
+	union {
+		__u8 value_mask; // set for S_GPIO_WRITE, set by G_GPIO_READ
+		__u8 dir_mask; // set for S_GPIO_CONFIG
+	};
+};
+struct s2253p_data {
+	__u8 size;
+	__u8 data[255];
+};
+struct s2253p_gps {
+	union {
+		__u8 status;
+		__u8 enable;
+		__u8 satellites;
+		__u8 lock;
+	};
+};
+struct s2253p_gps_item {
+	char str[16];
+};
+struct s2253p_gps_msg {
+	char str[80];
+};
+struct s2253p_version {
+	__u32 version;
+};
+struct s2253p_comstat {
+        __u16 framing_errors;
+        __u16 overrun_errors;
+        __u16 buffer_overflow;
+        __u16 gps_framing_errors;
+        __u16 gps_overrun_errors;
+        __u16 gps_buffer_overflow;
+};
+struct s2253p_xio {
+	union {
+		__u8 port_mask; // set for S_GPIO_CONFIG, S_GPIO_WRITE, S_GPIO_READ
+		__u8 not_ready_mask; // set by G_GPIO_READ
+	};
+	union {
+		__u8 value_mask; // set for S_GPIO_WRITE, set by G_GPIO_READ
+		__u8 enable_mask; // set for S_GPIO_CONFIG
+	};
+};
+struct s2253p_xio_pause {
+	__u8 stream; // 0=capture 1=preview 2=output 3=freeze
+	__u8 port; // xio port 3=A0 2=B0 1=A1 0=B1
+	__u8 mode;
+};
+enum s2253p_pause_mode {
+	S2253P_PAUSE_MODE_DISABLED = 0,
+	S2253P_PAUSE_MODE_RISING_EDGE = 1,
+	S2253P_PAUSE_MODE_FALLING_EDGE = 2,
+	S2253P_PAUSE_MODE_LEVEL_HIGH = 3,
+	S2253P_PAUSE_MODE_LEVEL_LOW = 4,
+};
+struct s2253p_enable {
+	__u8 enable;
+};
+
+
+struct s2253_user_data {
+	char *data;	/* data to be inserted in the stream */
+	int len;	/* length of the data */
+	int interval;	/* 0=insert once per ioctl, otherwise every Nth frame */
+};
+
+#define S2253_CID_BASE			(V4L2_CTRL_CLASS_USER | 0x1000)
+#define S2253_CID_DFLIP			(S2253_CID_BASE + 1)
+#define S2253_CID_INTERPOLATE		(S2253_CID_BASE + 2)
+#define S2253_CID_OUTPUT_MODE		(S2253_CID_BASE + 3)
+#define S2253_CID_LOW_LATENCY		(S2253_CID_BASE + 4)
+#define S2253_CID_TV_VCR_MODE		(S2253_CID_BASE + 5)
+// V4L2 has chosen to deprecate V4L2_CID_VCENTER and V4L2_CID_HCENTER.
+// These were removed in 3.9.0.
+// The V4L2_CID_PAN/TILT_ABSOLUTE functions take units of arc seconds.
+// V4L2_CID_PAN/TILT_RELATIVE functions are arbitrary but relative to the
+// current position.
+// For backward compatibility, we need a custom VCENTER and HCENTER
+// command with the same functionality as the old V4L2_CID_*CENTER functions
+// They are given below.  In the future, we may add V4L2_CID_PAN_RELATIVE,
+// V4L2_CID_PAN_RESET, V4L2_CID_TILT_RELATIVE and V4L2_CID_TILT_RESET functions,
+// but not likely.
+#define S2253_CID_HCENTER               (S2253_CID_BASE + 6)
+#define S2253_CID_VCENTER               (S2253_CID_BASE + 7)
+#define S2253_CID_FIELDMODE		(S2253_CID_BASE + 8)
+#define S2253_CID_FREEZE		(S2253_CID_BASE + 10)
+#define S2253_CID_OUTPUT_VGA		(S2253_CID_BASE + 11)
+
+
+#define S2253_CTRL_CLASS_IO		0x009e0000
+#define S2253_CID_IO_BASE		(S2253_CTRL_CLASS_IO | 0x900)
+#define S2253_CID_IO_CLASS		(S2253_CTRL_CLASS_IO | 1)
+#define S2253_CID_GPI			(S2253_CID_IO_BASE + 1)
+#define S2253_CID_GPO			(S2253_CID_IO_BASE + 2)
+#define S2253_CID_GPI_PAUSE		(S2253_CID_IO_BASE + 3)
+#define S2253_CID_GPI_FREEZE		(S2253_CID_IO_BASE + 4)
+#define S2253_CID_XLED_MODE		(S2253_CID_IO_BASE + 5)
+#define S2253_CID_CPU_LOAD		(S2253_CID_IO_BASE + 6)
+
+#define S2253_CID_AUDIO_DELAY		(V4L2_CID_MPEG_BASE | 0x1001)
+
+#define S2253_CTRL_CLASS_OSD		0x009f0000
+#define S2253_CID_OSD_BASE		(S2253_CTRL_CLASS_OSD | 0x900)
+#define S2253_CID_OSD_CLASS		(S2253_CTRL_CLASS_OSD | 1)
+
+#define S2253_CID_OSD_ENABLE		(S2253_CID_OSD_BASE + 1)
+#define S2253_CID_OSD_TRANSPARENT	(S2253_CID_OSD_BASE + 2)
+#define S2253_CID_OSD_POSITION		(S2253_CID_OSD_BASE + 3)
+#define S2253_CID_OSD_DATEFORMAT	(S2253_CID_OSD_BASE + 4)
+#define S2253_CID_OSD_TIMEFORMAT	(S2253_CID_OSD_BASE + 5)
+#define S2253_CID_OSD_TIMEZONE  	(S2253_CID_OSD_BASE + 6)
+#define S2253_CID_OSD_MESSAGE		(S2253_CID_OSD_BASE + 7)
+#define S2253_CID_OSD_XOFF		(S2253_CID_OSD_BASE + 8)
+#define S2253_CID_OSD_YOFF		(S2253_CID_OSD_BASE + 9)
+
+
+#endif /* S2253_IOCTL_H */
